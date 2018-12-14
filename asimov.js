@@ -1,7 +1,9 @@
+const fs = require('fs');
 const natural = require('natural');
 const syllable = require('syllable');
 const ease = require('readability-meter');
 const readingTime = require('reading-time');
+const writeGood = require('write-good');
 
 const wordCounter = new natural.WordTokenizer();
 const sentenceCounter = new natural.SentenceTokenizer();
@@ -20,6 +22,7 @@ function processText(text) {
   const syllableCount = wordTokens.reduce((a, b) => a + syllable(b), 0);
   const readability = ease.ease(text);
   const time = readingTime(text);
+  const suggestions = writeGood(text);
 
   const obj = {
     wordCount,
@@ -29,12 +32,21 @@ function processText(text) {
     syllableCount,
     readability,
     time,
+    suggestions,
   };
-  
+
   return obj;
 }
 
-console.log(processText('Look at me. I have a lot of things to do. Adorable.'));
-console.log(processText('Abort!'));
-console.log(processText(1));
-console.log(processText(false));
+async function tests() {
+  console.log(processText('Look at me. I have a lot of things to do. Adorable.'));
+  console.log(processText('Abort! This is not the best approach'));
+  console.log(processText('So the cat was stolen.'));
+  console.log(processText(1));
+  console.log(processText(false));
+  const shogun = await fs.readFileSync('the_shogun.txt', 'utf8');
+  console.log(processText(shogun));
+}
+
+
+tests();
