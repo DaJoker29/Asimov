@@ -4,14 +4,14 @@ const syllable = require('syllable');
 const ease = require('readability-meter');
 const readingTime = require('reading-time');
 const writeGood = require('write-good');
-const spelling = require('spelling');
+const Spell = require('spelling');
 const dictionary = require('spelling/dictionaries/en_US');
-
-const dict = new spelling(dictionary);
-
+const ui = require('cliui')();
+const moment = require('moment');
 
 const wordCounter = new natural.WordTokenizer();
 const sentenceCounter = new natural.SentenceTokenizer();
+const dict = new Spell(dictionary);
 
 function processText(text) {
   if ('string' !== typeof text) {
@@ -31,6 +31,7 @@ function processText(text) {
   const spelling = [...new Set(wordTokens.map(e => e.toLowerCase()))].reduce((a, b) => a.concat([dict.lookup(b)]), []);
 
   const obj = {
+    text,
     wordCount,
     sentenceCount,
     avgWordLen,
@@ -45,15 +46,77 @@ function processText(text) {
   return obj;
 }
 
+function drawCLI(obj) {
+  // Handle errors
+  if ('string' === typeof obj) {
+    return console.log(obj);
+  }
+  const {
+    text, wordCount, sentenceCount, avgWordLen, avgSentLen, readability, time, suggestions, spelling, 
+  } = obj;
+
+  ui.div({
+    text,
+    border: true,
+    padding: [0, 5, 1, 5],
+  });
+
+  ui.div({
+    text:`Word Count: \t\t\t ${wordCount}\n`
+    + `Sentence Count: \t\t ${sentenceCount}\n`
+    + `Average Word Length: \t\t ${avgWordLen.toFixed(2)} chars\n`
+    + `Average Sentence Length: \t ${avgSentLen.toFixed(2)} words \n`
+    + `Readability: \t\t\t ${'notes' in readability ? readability.notes : 100 < readability.score ? 'Super easy' : 'N/A'}\n`
+    + `Estimated Reading Time: \t ${moment.duration(time.time).humanize()}`,
+    padding: [0, 0, 0, 10],
+  });
+
+  if (suggestions.length) {
+    ui.div({
+      text: 'Grammar'.toUpperCase(),
+      padding: [1, 0, 0, 10],
+    });
+
+    ui.div({
+      text: suggestions.reduce((a, b) => a.concat(`Index ${b.index}`.padEnd(25, ' '), `\t=> \t${b.reason}\n`), ''),
+      padding: [0, 0, 0, 15],
+    });
+  }
+
+  const misspelled = spelling.filter(x => !x.found);
+
+  if (misspelled.length) {
+    ui.div({
+      text: 'Spelling'.toUpperCase(),
+      padding: [1, 0, 0, 10],
+    });
+
+    ui.div({
+      text: misspelled.reduce((a, b) => a.concat(`${b.word.toUpperCase()}, Index ${text.search(new RegExp(b.word, 'i'))}`.padEnd(25, ' '), `\t=> \t${b.suggestions.slice(0, 3).map(z => z.word).join(', ')}\n`), ''),
+      padding: [0, 0, 0, 15],
+    });
+  }
+
+
+  // Print UI
+  console.log(ui.toString());
+  ui.resetOutput();
+}
+
 async function tests() {
-  console.log(processText('Look at me. I have a lot of things to do. Adorable.'));
-  console.log(processText('Abort! This is not the best approach'));
-  console.log(processText('So the cat was stolen.'));
-  console.log(processText('The is the the.'));
-  console.log(processText(1));
-  console.log(processText(false));
   const shogun = await fs.readFileSync('the_shogun.txt', 'utf8');
-  console.log(processText(shogun));
+  const blackExp = await fs.readFileSync('the_black_experience.txt', 'utf8');
+
+  drawCLI(processText(1));
+  drawCLI(processText(false));
+  drawCLI(processText(shogun));
+  drawCLI(processText(blackExp));
+  drawCLI(processText('Look at me. I have a lot of things to do. Adorable.'));
+  drawCLI(processText('Abort! This is not the best approach'));
+  drawCLI(processText('The is the the.'));
+  drawCLI(processText('So the cat was stolen.'));
+  drawCLI(processText('A Sooop. I like it it.'));
+  drawCLI(processText('And I said to myself, this is the the age of Aquarius.'));
 }
 
 

@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/DaJoker29/Asimov#readme",
   "dependencies": {
+    "cliui": "4.1.0",
     "eslint": "5.10.0",
     "eslint-config-airbnb": "17.1.0",
     "eslint-plugin-import": "2.14.0",
@@ -24,6 +25,7 @@
     "eslint-plugin-jsx-a11y": "6.1.2",
     "eslint-plugin-react": "7.11.1",
     "flesch-kincaid": "1.0.3",
+    "moment": "2.23.0",
     "natural": "0.6.2",
     "readability-meter": "1.0.0",
     "reading-time": "1.1.3",
