@@ -4,6 +4,11 @@ const syllable = require('syllable');
 const ease = require('readability-meter');
 const readingTime = require('reading-time');
 const writeGood = require('write-good');
+const spelling = require('spelling');
+const dictionary = require('spelling/dictionaries/en_US');
+
+const dict = new spelling(dictionary);
+
 
 const wordCounter = new natural.WordTokenizer();
 const sentenceCounter = new natural.SentenceTokenizer();
@@ -23,6 +28,7 @@ function processText(text) {
   const readability = ease.ease(text);
   const time = readingTime(text);
   const suggestions = writeGood(text);
+  const spelling = [...new Set(wordTokens.map(e => e.toLowerCase()))].reduce((a, b) => a.concat([dict.lookup(b)]), []);
 
   const obj = {
     wordCount,
@@ -33,6 +39,7 @@ function processText(text) {
     readability,
     time,
     suggestions,
+    spelling,
   };
 
   return obj;
@@ -42,6 +49,7 @@ async function tests() {
   console.log(processText('Look at me. I have a lot of things to do. Adorable.'));
   console.log(processText('Abort! This is not the best approach'));
   console.log(processText('So the cat was stolen.'));
+  console.log(processText('The is the the.'));
   console.log(processText(1));
   console.log(processText(false));
   const shogun = await fs.readFileSync('the_shogun.txt', 'utf8');
