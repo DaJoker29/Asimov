@@ -139,22 +139,8 @@ function drawCLI(obj) {
   ui.resetOutput();
 }
 
-async function tests() {
-  const shogun = await fs.readFileSync('the_shogun.txt', 'utf8');
-  const blackExp = await fs.readFileSync('the_black_experience.txt', 'utf8');
-
-  drawCLI(processText(1));
-  drawCLI(processText(false));
-  drawCLI(processText(shogun));
-  drawCLI(processText(blackExp));
-  drawCLI(processText('Look at me. I have a lot of things to do. Adorable.'));
-  drawCLI(processText('Abort! This is not the best approach'));
-  drawCLI(processText('The is the the.'));
-  drawCLI(processText('So the cat was stolen.'));
-  drawCLI(processText('A Sooop. I like it it.'));
-  drawCLI(
-    processText('And I said to myself, this is the the age of Aquarius.')
-  );
+function analyze(text) {
+  drawCLI(processText(text));
 }
 
-tests();
+module.exports.analyze = analyze;
