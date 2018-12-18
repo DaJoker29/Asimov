@@ -1,6 +1,6 @@
 {
   "name": "asimov",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "> Text Analysis Engine and Automated Proofreader",
   "main": "asimov.js",
   "scripts": {
