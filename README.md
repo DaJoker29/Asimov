@@ -12,7 +12,7 @@ Along with checks, it also generates a statistical breakdown of key figures that
 
 ### Requirements
 1. [x] Accept String Input
-2. [ ] Accept Stream/Buffer Input (CLI)
+2. [x] Accept File/Buffer Input (CLI)
 3. [x] Run from CLI
 4. [ ] Run as a library/module
 5. [x] Calculate writing stats
