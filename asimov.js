@@ -17,7 +17,7 @@ const dict = new Spell(dictionary);
 function processText(text) {
   // Check if string
   if (typeof text !== 'string') {
-    return `Error: ${text} is not a string`;
+    throw Error('Text is not a string.');
   }
 
   // Generate tokens
@@ -146,12 +146,16 @@ function drawCLI(obj) {
   ui.resetOutput();
 }
 
-function analyze(text) {
-  const result = processText(text);
-  drawCLI(result);
-}
+// function analyze(text) {
+//    processText(text);
+//   return
+//   // if run as a script, draw to CLI.
+//   // if imported by another module and run, return object
+//   // unless specifically asked to draw to CLI
+// }
 
-module.exports.analyze = analyze;
+module.exports.analyze = processText;
+module.exports.draw = drawCLI;
 
 // Respond to incorrect format
 if (!module.parent && process.argv.length <= 2) {
@@ -166,6 +170,10 @@ if (!module.parent && filename && typeof filename === 'string') {
   fs.readFile(filename, 'utf8', (err, data) => {
     if (err) throw err;
     console.log(`Analyzing file: ${filename}`);
-    analyze(data);
+    try {
+      drawCLI(processText(data));
+    } catch (e) {
+      console.log(`Error: ${e}`);
+    }
   });
 }
