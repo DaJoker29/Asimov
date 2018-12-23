@@ -15,9 +15,12 @@ const sentenceCounter = new natural.SentenceTokenizer();
 const dict = new Spell(dictionary);
 
 function processText(text) {
-  // Check if string
+  if (typeof text === 'undefined') {
+    throw new Error('No text provided.');
+  }
+
   if (typeof text !== 'string') {
-    throw Error('Text is not a string.');
+    throw new TypeError('Text is not a string.');
   }
 
   // Generate tokens
