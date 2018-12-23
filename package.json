@@ -6,6 +6,11 @@
   "scripts": {
     "test": "mocha"
   },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm test"
+    }
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/DaJoker29/Asimov.git"
@@ -30,6 +35,7 @@
     "eslint-plugin-prettier": "3.0.0",
     "eslint-plugin-react": "7.11.1",
     "flesch-kincaid": "1.0.3",
+    "husky": "1.2.1",
     "mocha": "5.2.0",
     "moment": "2.23.0",
     "natural": "0.6.2",
